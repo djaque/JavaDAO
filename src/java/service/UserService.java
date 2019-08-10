@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author dany
  */
-public class UserService {
+public class UserService  {
     // Select mysql to work
     DAOFactory factory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
     

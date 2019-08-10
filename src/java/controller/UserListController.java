@@ -18,7 +18,7 @@ import service.UserService;
  *
  * @author dany
  */
-public class UserController extends HttpServlet {
+public class UserListController extends HttpServlet {
 
     private void populateUsers(HttpServletRequest request, HttpServletResponse response) {
         UserService usersManager = new UserService();
@@ -79,7 +79,7 @@ public class UserController extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+        return "Crea y lista usuarios";
+    }
 
 }
