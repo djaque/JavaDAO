@@ -35,7 +35,7 @@
                     out.println("<li>SIN USUARIOS</li>");
                 } else {
                     for(UserDTO u : lu) {
-                        out.println("<li>"+u.getName()+" ("+u.getEmail()+")</li>");
+                        out.println("<li>"+u.getName()+" ("+u.getEmail()+") <a href=\"user_edit?id="+u.getId()+"\">Editar</a></li>");
                     }
                 }
             %>

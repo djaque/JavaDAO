@@ -24,8 +24,12 @@ public class MySQLUserDAO implements UserDAO {
 
     final String SELECTALL = "SELECT * FROM usuarios";
     final String SELECTBYID = "SELECT * FROM usuarios WHERE id = ?";
+    final String SELECTBYEMAIL = "SELECT * FROM usuarios WHERE email = ?";
+    final String SELECTBYNAME = "SELECT * FROM usuarios WHERE name = ?";
+
     final String CREATE = "INSERT INTO usuarios (nombre, email, password) VALUES (?,?,?)";
-    final String UPDATE = "UPDATE user SET nombre = ?, email = ?, password = ? WHERE id = ?";
+    final String UPDATE = "UPDATE usuarios SET nombre = ?, email = ?, password = ? WHERE id = ?";
+    final String DELETE = "DELETE FROM usuarios WHERE id = ?";
 
     @Override
     public int create(UserDTO u) {
@@ -59,12 +63,60 @@ public class MySQLUserDAO implements UserDAO {
 
     @Override
     public int update(UserDTO u) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int rs = 0;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = MysqlConnection.open();
+            ps = conn.prepareStatement(this.UPDATE);
+            ps.setString(1, u.getName());
+            ps.setString(2, u.getEmail());
+            ps.setString(3, u.getPassword());
+            ps.setInt(4, u.getId());
+            rs = ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.out.println("Error SQL" + ex.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error Closing" + ex.getMessage());
+            }
+        }
+        return rs;
     }
 
     @Override
     public int delete(UserDTO u) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int rs = 0;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = MysqlConnection.open();
+            ps = conn.prepareStatement(this.DELETE);
+            ps.setInt(1, u.getId());
+            rs = ps.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("Error SQL" + ex.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error Closing" + ex.getMessage());
+            }
+        }
+        return rs;
     }
 
     @Override
@@ -106,13 +158,13 @@ public class MySQLUserDAO implements UserDAO {
     @Override
     public List<UserDTO> getAll() {
         List<UserDTO> lu = new ArrayList<>();
-         Connection conn = null;
+        Connection conn = null;
         Statement ps = null;
         try {
-             conn = MysqlConnection.open();
+            conn = MysqlConnection.open();
             Statement stm = conn.createStatement();
             ResultSet rs = stm.executeQuery(this.SELECTALL);
-            while(rs.next()){
+            while (rs.next()) {
                 UserDTO u = new UserDTO();
                 u.setId(rs.getInt("id"));
                 u.setName(rs.getString("nombre"));
@@ -120,9 +172,9 @@ public class MySQLUserDAO implements UserDAO {
                 u.setPassword(rs.getString("password"));
                 lu.add(u);
             }
-        } catch (SQLException ex){
-            System.out.println("Error SQL"+ex.getMessage());
-        }finally {
+        } catch (SQLException ex) {
+            System.out.println("Error SQL" + ex.getMessage());
+        } finally {
             try {
                 if (conn != null) {
                     conn.close();
@@ -137,14 +189,75 @@ public class MySQLUserDAO implements UserDAO {
         return lu;
     }
 
-    @Override 
+    @Override
     public UserDTO findByEmail(String email) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        UserDTO u = null;
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = MysqlConnection.open();
+            ps = conn.prepareStatement(this.SELECTBYEMAIL);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                u = new UserDTO();
+                u.setId(rs.getInt("id"));
+                u.setName(rs.getString("nombre"));
+                u.setEmail(rs.getString("email"));
+                u.setPassword(rs.getString("password"));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error SQL" + ex.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error Closing" + ex.getMessage());
+            }
+        }
+
+        return u;
     }
 
     @Override
     public UserDTO findByName(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        UserDTO u = null;
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = MysqlConnection.open();
+            ps = conn.prepareStatement(this.SELECTBYNAME);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                u = new UserDTO();
+                u.setId(rs.getInt("id"));
+                u.setName(rs.getString("nombre"));
+                u.setEmail(rs.getString("email"));
+                u.setPassword(rs.getString("password"));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error SQL" + ex.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error Closing" + ex.getMessage());
+            }
+        }
+        return u;
     }
 
 }
